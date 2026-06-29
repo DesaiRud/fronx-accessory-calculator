@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fronx Accessories Price Calculator</title>
+  <style>
+    *{box-sizing:border-box;font-family:Arial, sans-serif}
+    body{margin:0;background:#f4f6f8;color:#111}
+    .header{background:#fff200;padding:22px;text-align:center;font-size:30px;font-weight:800;letter-spacing:.5px}
+    .container{max-width:900px;margin:25px auto;background:white;border-radius:14px;box-shadow:0 8px 25px rgba(0,0,0,.12);overflow:hidden}
+    .top{padding:18px 22px;background:#111;color:#fff;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .top h2{margin:0;font-size:22px}
+    .totalBox{font-size:22px;font-weight:800;color:#fff200}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:14px 16px;border-bottom:1px solid #ddd;text-align:left}
+    th{background:#f0f0f0}
+    td.price{text-align:right;font-weight:700}
+    input[type="checkbox"]{width:20px;height:20px;cursor:pointer}
+    tr:hover{background:#fffbe0}
+    .buttons{padding:18px;display:flex;gap:10px;flex-wrap:wrap}
+    button{border:0;padding:12px 18px;border-radius:8px;font-weight:700;cursor:pointer}
+    .selectAll{background:#111;color:#fff}
+    .clear{background:#ff4747;color:#fff}
+    .print{background:#ffc400;color:#111}
+    .summary{padding:18px;background:#f7f7f7;border-top:1px solid #ddd}
+    .summary h3{margin-top:0}
+    .selectedItem{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #ccc}
+    .note{background:#ffc400;text-align:center;font-weight:800;padding:12px}
+    .smallNote{text-align:center;padding:10px;font-weight:700}
+    @media(max-width:600px){
+      .header{font-size:22px}
+      th,td{padding:11px 8px;font-size:14px}
+      .top h2,.totalBox{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">FRONX ACCESSORIES PRICE CALCULATOR</div>
+
+  <div class="container">
+    <div class="top">
+      <h2>Select accessories as per your need</h2>
+      <div class="totalBox">Total: ₹<span id="total">0</span></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Accessory</th>
+          <th style="text-align:right;">Price</th>
+        </tr>
+      </thead>
+      <tbody id="items"></tbody>
+    </table>
+
+    <div class="buttons">
+      <button class="selectAll" onclick="selectAllItems()">Select All</button>
+      <button class="clear" onclick="clearAll()">Clear All</button>
+      <button class="print" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+    <div class="summary">
+      <h3>Selected Accessories</h3>
+      <div id="selectedList">No item selected.</div>
+    </div>
+
+    <div class="note">ALL PART INCLUDING GST + LABOUR</div>
+    <div class="smallNote">If any part pending, will arrange and give approx 12/15 days</div>
+  </div>
+
+  <script>
+    const accessories = [
+      {name:"Mud Flap", price:740},
+      {name:"All Weather 3D Mat", price:3650},
+      {name:"Fronx Body Side Molding", price:3190},
+      {name:"Premium Body Cover", price:2850},
+      {name:"Front Underbody Spoiler", price:2230},
+      {name:"Rear Underbody Spoiler", price:2690},
+      {name:"Side Underbody Spoiler", price:3290},
+      {name:"Front Bumper Garnish", price:950},
+      {name:"Rear View Camera", price:8100},
+      {name:"Back Door Garnish", price:1050},
+      {name:"Head Lamp Garnish", price:850},
+      {name:"Rear Bumper Corner Garnish", price:800},
+      {name:"Wheel Arch Garnish", price:950},
+      {name:"3D Boot Mat", price:2250},
+      {name:"Seat Cover 6 Air Bag", price:10890},
+      {name:"Door Sill Guard Illuminated", price:3720},
+      {name:"Arm Rest", price:3500},
+      {name:"Door Visor Premium", price:3000},
+      {name:"Window Sunshade", price:1280},
+      {name:"Fronx Alloy Wheel Machined 16x4", price:35200}
+    ];
+
+    const tbody = document.getElementById("items");
+
+    accessories.forEach((item, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="checkbox" class="itemCheck" data-index="${index}" onchange="calculateTotal()"></td>
+        <td>${item.name}</td>
+        <td class="price">₹${item.price.toLocaleString("en-IN")}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    function calculateTotal(){
+      let total = 0;
+      let selectedHTML = "";
+      const checks = document.querySelectorAll(".itemCheck");
+
+      checks.forEach(check => {
+        if(check.checked){
+          const item = accessories[check.dataset.index];
+          total += item.price;
+          selectedHTML += `
+            <div class="selectedItem">
+              <span>${item.name}</span>
+              <b>₹${item.price.toLocaleString("en-IN")}</b>
+            </div>`;
+        }
+      });
+
+      document.getElementById("total").innerText = total.toLocaleString("en-IN");
+      document.getElementById("selectedList").innerHTML =
+        selectedHTML || "No item selected.";
+    }
+
+    function selectAllItems(){
+      document.querySelectorAll(".itemCheck").forEach(c => c.checked = true);
+      calculateTotal();
+    }
+
+    function clearAll(){
+      document.querySelectorAll(".itemCheck").forEach(c => c.checked = false);
+      calculateTotal();
+    }
+  </script>
+</body>
+</html>
